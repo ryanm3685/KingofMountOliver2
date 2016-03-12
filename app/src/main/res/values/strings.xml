@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">King of Mount Oliver</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_how_many_players">HowManyPlayers</string>
+    <string name="title_activity_select_characters">SelectCharacters</string>
+    <string name="title_activity_game">GameActivity</string>
+</resources>
