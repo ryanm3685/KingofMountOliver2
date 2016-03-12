@@ -13,11 +13,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Player 1 - Tap Image to Select Character"
+        android:text="Tap Image to Select Character"
         android:id="@+id/setCharacterPlayer"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/selectCharacterImage"
-        android:layout_alignEnd="@+id/selectCharacterImage" />
+        android:layout_above="@+id/selectCharacterImage"
+        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -42,5 +41,13 @@
         android:id="@+id/prevCharButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextPlayerName"
+        android:layout_above="@+id/setCharacterPlayer"
+        android:layout_centerHorizontal="true"
+        android:text="Enter Player Name" />
 
 </RelativeLayout>

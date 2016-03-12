@@ -9,6 +9,12 @@ public class Player {
     int image, mojo = 10, juice, energy;
     boolean isAI;
 
+    public Player(String name, boolean isAI)
+    {
+        this.name = name;
+        this.isAI = isAI;
+    }
+
     public String getName() {
         return name;
     }

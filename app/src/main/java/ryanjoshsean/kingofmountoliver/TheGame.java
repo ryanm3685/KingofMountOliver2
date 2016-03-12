@@ -18,10 +18,15 @@ public class TheGame {
     static int MAX_ENERGY = 99;
     static int PLAYERS_FOR_SOUTH_18TH = 5;
 
-    public TheGame(int numPlayers)
+    public TheGame(String [] playerNames, boolean [] aiArray)
     {
         players = new ArrayList<Player>();
         diceArray = new Dice[6];
+
+        for (int i = 0; i < playerNames.length; i++)
+        {
+            players.add(new Player(playerNames[i], aiArray[i]));
+        }
     }
 
     public void rollDice(ArrayList<Dice> diceArrayList)
