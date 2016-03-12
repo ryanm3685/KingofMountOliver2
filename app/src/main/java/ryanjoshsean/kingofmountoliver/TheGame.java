@@ -16,6 +16,7 @@ public class TheGame {
     enum diceSides  {MOJO, ENERGY, ATTACK, ONE, TWO, THREE};
     static int MAX_MOJO = 20;
     static int MAX_ENERGY = 99;
+    static int PLAYERS_FOR_SOUTH_18TH = 5;
 
     public TheGame(int numPlayers)
     {
@@ -33,7 +34,7 @@ public class TheGame {
 
     public void evaluateDice()
     {
-        int energy = 0, mojo = 0, attack = 0, one = 0, two = 0, three = 0;
+        int energy = 0, mojo = 0, attack = 0, one = 0, two = 0, three = 0, juice = 0;
         for (Dice d : diceArray)
         {
             if (d.value == diceSides.MOJO) mojo += 1;
@@ -45,20 +46,38 @@ public class TheGame {
         }
 
         if (mojo > 0) adjustMojo(currentPlayer, mojo, true);
-        if ()
+        if (energy > 0) adjustEnergy(currentPlayer, energy, true);
+        if (attack > 0) attack(currentPlayer, attack);
+        if (one/3 > 0) juice += (one % 3);
+        if (two/3 > 0) juice += (two % 3);
+        if (three/3 > 0) juice += (three % 3);
+
+        if (juice > 0) adjustJuice(currentPlayer, juice);
     }
 
     public void attack(Player attacker, int points)
     {
-
-        if (brownsvillePlayer == attacker || south18thPlayer == attacker)
+        if (null == brownsvillePlayer)
         {
-            attackOutside(attacker, points);
+            brownsvillePlayer = attacker;
+        }
+        else if (players.size() >= PLAYERS_FOR_SOUTH_18TH && null == south18thPlayer)
+        {
+            south18thPlayer = attacker;
         }
         else
         {
-            attackInside(points);
+            if (brownsvillePlayer == attacker || south18thPlayer == attacker)
+            {
+                attackOutside(attacker, points);
+            }
+            else
+            {
+                attackInside(points);
+            }
         }
+
+
     }
 
     public void attackOutside(Player attacker, int points)
@@ -77,11 +96,13 @@ public class TheGame {
         if (null != brownsvillePlayer)
         {
             adjustMojo(brownsvillePlayer, points, false);
+            lastAttackerOfCenter = currentPlayer;
         }
 
         if (null != south18thPlayer)
         {
             adjustMojo(south18thPlayer, points, false);
+            lastAttackerOfCenter = currentPlayer;
         }
     }
 
@@ -91,8 +112,7 @@ public class TheGame {
         {
             player.setMojo(player.getMojo() + points);
         }
-        else
-        {
+        else {
             player.setMojo(player.getMojo() - points);
         }
 
@@ -131,6 +151,28 @@ public class TheGame {
         {
             player.setEnergy(player.getEnergy() - points);
         }
+
+        if (player.getEnergy() > MAX_ENERGY) player.setEnergy(MAX_ENERGY);
+    }
+
+    public void setBrownsvillePlayer(Player player)
+    {
+        brownsvillePlayer = player;
+    }
+
+    public void setSouth18thPlayer(Player player)
+    {
+        south18thPlayer = player;
+    }
+
+    public void leaveBrownsville()
+    {
+        setBrownsvillePlayer(lastAttackerOfCenter);
+    }
+
+    public void leaveSouth18th()
+    {
+        setSouth18thPlayer(lastAttackerOfCenter);
     }
 
     public void declareWinner(Player player)

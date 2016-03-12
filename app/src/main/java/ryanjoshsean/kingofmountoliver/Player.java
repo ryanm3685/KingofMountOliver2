@@ -8,6 +8,15 @@ import java.util.ArrayList;
 public class Player {
     int image, mojo = 10, juice, energy;
     boolean isAI;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     String name;
     ArrayList<Card> cards;
 
