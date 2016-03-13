@@ -2,7 +2,6 @@ package ryanjoshsean.kingofmountoliver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by ryanmcgregor on 3/11/16.
@@ -10,13 +9,16 @@ import java.util.Random;
 public class TheGame {
     List<Player> players;
     Dice [] diceArray;
-    Player brownsvillePlayer, south18thPlayer, lastAttackerOfCenter; //who is on brownsville, who is on south 18th,
+    Player brownsvillePlayer;
+    Player south18thPlayer;
+    Player lastAttackerOfCenter; //who is on brownsville, who is on south 18th,
     //and who last attacked those two?
     Player currentPlayer; //whose turn is it
-    enum diceSides  {MOJO, ENERGY, ATTACK, ONE, TWO, THREE};
     static int MAX_MOJO = 20;
     static int MAX_ENERGY = 99;
     static int PLAYERS_FOR_SOUTH_18TH = 5;
+    enum rollStatus {firstRoll, rerollOne, rerollTwo};
+    rollStatus currentRollStatus;
 
     public TheGame(String [] playerNames, boolean [] aiArray)
     {
@@ -27,9 +29,27 @@ public class TheGame {
         {
             players.add(new Player(playerNames[i], aiArray[i]));
         }
+
+        currentPlayer = players.get(0);
     }
 
-    public void rollDice(ArrayList<Dice> diceArrayList)
+    public void advanceToNextPlayer()
+    {
+        int currentIndex = players.indexOf(currentPlayer);
+
+        if (currentIndex < players.size() - 1)
+        {
+            currentPlayer = players.get(currentIndex + 1);
+        }
+        else
+        {
+            currentPlayer = players.get(0);
+        }
+
+        currentRollStatus = rollStatus.firstRoll;
+    }
+
+    public void rollDice(boolean [] shouldR)
     {
         for (Dice dice : diceArrayList)
         {
@@ -42,12 +62,12 @@ public class TheGame {
         int energy = 0, mojo = 0, attack = 0, one = 0, two = 0, three = 0, juice = 0;
         for (Dice d : diceArray)
         {
-            if (d.value == diceSides.MOJO) mojo += 1;
-            else if (d.value == diceSides.ENERGY) energy += 1;
-            else if (d.value == diceSides.ATTACK) attack += 1;
-            else if (d.value == diceSides.ONE) one += 1;
-            else if (d.value == diceSides.TWO) two += 1;
-            else if (d.value == diceSides.THREE) three += 1;
+            if (d.value == DiceSides.diceSides.MOJO) mojo += 1;
+            else if (d.value == DiceSides.diceSides.ENERGY) energy += 1;
+            else if (d.value == DiceSides.diceSides.ATTACK) attack += 1;
+            else if (d.value == DiceSides.diceSides.ONE) one += 1;
+            else if (d.value == DiceSides.diceSides.TWO) two += 1;
+            else if (d.value == DiceSides.diceSides.THREE) three += 1;
         }
 
         if (mojo > 0) adjustMojo(currentPlayer, mojo, true);
@@ -83,6 +103,10 @@ public class TheGame {
         }
 
 
+    }
+
+    public Player getLastAttackerOfCenter() {
+        return lastAttackerOfCenter;
     }
 
     public void attackOutside(Player attacker, int points)
@@ -183,47 +207,6 @@ public class TheGame {
     public void declareWinner(Player player)
     {
 
-    }
-
-    private class Dice
-    {
-        boolean isSelected;
-        diceSides value;
-        int number;
-        Random r;
-
-        Dice()
-        {
-            r = new Random();
-            value = diceSides.MOJO;
-        }
-
-        void roll()
-        {
-            number = r.nextInt(6);
-            switch (number)
-            {
-                case 0:
-                    value = diceSides.ATTACK;
-                    break;
-                case 1:
-                    value = diceSides.ONE;
-                    break;
-                case 2:
-                    value = diceSides.TWO;
-                    break;
-                case 3:
-                    value = diceSides.THREE;
-                    break;
-                case 4:
-                    value = diceSides.ENERGY;
-                    break;
-                case 5:
-                    value = diceSides.MOJO;
-                    break;
-
-            }
-        }
     }
 
     private class SpecialDice

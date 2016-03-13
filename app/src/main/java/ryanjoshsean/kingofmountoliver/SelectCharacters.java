@@ -74,6 +74,7 @@ public class SelectCharacters extends ActionBarActivity {
                 Intent intent = new Intent(getApplicationContext(), GameActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putStringArray("names", namesArray);
+                bundle.putBooleanArray("AI", aiArray);
                 bundle.putIntArray("images", imagesArray);
                 intent.putExtras(bundle);
                 startActivity(intent);
