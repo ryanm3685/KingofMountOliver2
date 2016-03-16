@@ -7,14 +7,14 @@ import java.util.Random;
  */
 public class Dice {
     boolean isSelected;
-    DiceSides.diceSides value;
+    EnumClass.diceSides value;
     int number;
     Random r;
 
     Dice()
     {
         r = new Random();
-        value = DiceSides.diceSides.MOJO;
+        value = EnumClass.diceSides.MOJO;
     }
 
     void roll()
@@ -23,22 +23,22 @@ public class Dice {
         switch (number)
         {
             case 0:
-                value = DiceSides.diceSides.ATTACK;
+                value = EnumClass.diceSides.ATTACK;
                 break;
             case 1:
-                value = DiceSides.diceSides.ONE;
+                value = EnumClass.diceSides.ONE;
                 break;
             case 2:
-                value = DiceSides.diceSides.TWO;
+                value = EnumClass.diceSides.TWO;
                 break;
             case 3:
-                value = DiceSides.diceSides.THREE;
+                value = EnumClass.diceSides.THREE;
                 break;
             case 4:
-                value = DiceSides.diceSides.ENERGY;
+                value = EnumClass.diceSides.ENERGY;
                 break;
             case 5:
-                value = DiceSides.diceSides.MOJO;
+                value = EnumClass.diceSides.MOJO;
                 break;
 
         }

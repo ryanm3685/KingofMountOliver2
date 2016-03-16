@@ -29,6 +29,7 @@ public class SelectCharacters extends ActionBarActivity {
         howManyPlayers = getIntent().getIntExtra("how_many", 2);
         imagesArray = new int[howManyPlayers];
         namesArray = new String[howManyPlayers];
+        aiArray = new boolean[howManyPlayers];
         characterImage = (ImageView)findViewById(R.id.selectCharacterImage);
         playerName = (EditText)findViewById(R.id.editTextPlayerName);
 

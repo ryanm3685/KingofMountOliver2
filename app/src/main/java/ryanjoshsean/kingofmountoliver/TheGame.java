@@ -17,13 +17,19 @@ public class TheGame {
     static int MAX_MOJO = 20;
     static int MAX_ENERGY = 99;
     static int PLAYERS_FOR_SOUTH_18TH = 5;
-    enum rollStatus {firstRoll, rerollOne, rerollTwo};
-    rollStatus currentRollStatus;
+
+    EnumClass.rollStatus currentRollStatus;
+
+    public EnumClass.rollStatus getCurrentRollStatus()
+    {
+        return currentRollStatus;
+    }
 
     public TheGame(String [] playerNames, boolean [] aiArray)
     {
         players = new ArrayList<Player>();
         diceArray = new Dice[6];
+        for (int i = 0; i < diceArray.length; i++) diceArray[i] = new Dice();
 
         for (int i = 0; i < playerNames.length; i++)
         {
@@ -31,6 +37,11 @@ public class TheGame {
         }
 
         currentPlayer = players.get(0);
+        currentRollStatus = EnumClass.rollStatus.firstRoll;
+    }
+
+    public Dice[] getDiceArray() {
+        return diceArray;
     }
 
     public void advanceToNextPlayer()
@@ -46,14 +57,28 @@ public class TheGame {
             currentPlayer = players.get(0);
         }
 
-        currentRollStatus = rollStatus.firstRoll;
+        currentRollStatus = EnumClass.rollStatus.firstRoll;
     }
 
-    public void rollDice(boolean [] shouldR)
+    //boolean array can be null for first roll of turn, but needs
+    //to exist for any rerolls to determine which dice will be rolled again
+    public void rollDice(boolean [] shouldRoll)
     {
-        for (Dice dice : diceArrayList)
+        if (currentRollStatus == EnumClass.rollStatus.firstRoll) //roll all dice
         {
-            dice.roll();
+            for (Dice dice : diceArray)
+            {
+                dice.roll();
+            }
+            currentRollStatus = EnumClass.rollStatus.rerollOne;
+        }
+        else if (currentRollStatus == EnumClass.rollStatus.rerollOne || currentRollStatus == EnumClass.rollStatus.rerollTwo)
+        {
+            for (int i = 0; i < diceArray.length; i++)
+            {
+                if (shouldRoll[i]) diceArray[i].roll();
+            }
+            if (currentRollStatus == EnumClass.rollStatus.rerollOne) currentRollStatus = EnumClass.rollStatus.rerollTwo;
         }
     }
 
@@ -62,12 +87,12 @@ public class TheGame {
         int energy = 0, mojo = 0, attack = 0, one = 0, two = 0, three = 0, juice = 0;
         for (Dice d : diceArray)
         {
-            if (d.value == DiceSides.diceSides.MOJO) mojo += 1;
-            else if (d.value == DiceSides.diceSides.ENERGY) energy += 1;
-            else if (d.value == DiceSides.diceSides.ATTACK) attack += 1;
-            else if (d.value == DiceSides.diceSides.ONE) one += 1;
-            else if (d.value == DiceSides.diceSides.TWO) two += 1;
-            else if (d.value == DiceSides.diceSides.THREE) three += 1;
+            if (d.value == EnumClass.diceSides.MOJO) mojo += 1;
+            else if (d.value == EnumClass.diceSides.ENERGY) energy += 1;
+            else if (d.value == EnumClass.diceSides.ATTACK) attack += 1;
+            else if (d.value == EnumClass.diceSides.ONE) one += 1;
+            else if (d.value == EnumClass.diceSides.TWO) two += 1;
+            else if (d.value == EnumClass.diceSides.THREE) three += 1;
         }
 
         if (mojo > 0) adjustMojo(currentPlayer, mojo, true);
