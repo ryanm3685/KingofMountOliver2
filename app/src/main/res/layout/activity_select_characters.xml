@@ -48,6 +48,6 @@
         android:id="@+id/editTextPlayerName"
         android:layout_above="@+id/setCharacterPlayer"
         android:layout_centerHorizontal="true"
-        android:text="Enter Player Name" />
+        android:hint="Enter Player Name" />
 
 </RelativeLayout>

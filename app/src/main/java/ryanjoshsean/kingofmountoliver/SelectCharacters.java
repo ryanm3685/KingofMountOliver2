@@ -17,14 +17,17 @@ public class SelectCharacters extends ActionBarActivity {
     boolean [] aiArray;
     ImageView characterImage;
     int imageResourceID;
-    boolean isRick = true;//TODO get more than rick sebak and fred rogers
     Button nextButton, prevButton;
     EditText playerName;
+    int [] imageResources; //the id for each character image
+    int imageResourceIndex; //index in array for the above id
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_characters);
+
+        initializeImageResources();
 
         howManyPlayers = getIntent().getIntExtra("how_many", 2);
         imagesArray = new int[howManyPlayers];
@@ -59,14 +62,7 @@ public class SelectCharacters extends ActionBarActivity {
                 aiArray[0] = false;
                 for (int i = 1; i < howManyPlayers; i++)
                 {
-                    if (isRick)
-                    {
-                        imagesArray[i] = R.drawable.fredrogers1;
-                    }
-                    else
-                    {
-                        imagesArray[i] = R.drawable.sebak230;
-                    }
+                    //set images here
 
                     namesArray[i] = String.format("Player %s", Integer.toString(i));
                     aiArray[i] = true;
@@ -84,21 +80,48 @@ public class SelectCharacters extends ActionBarActivity {
 
     }
 
+    void initializeImageResources()
+    {
+        imageResources = new int[6];
+
+        imageResources[0] = R.drawable.sebak230;
+        imageResources[1] = R.drawable.fredrogers1;
+        imageResources[2] = R.drawable.steelymcbeam;
+        imageResources[3] = R.drawable.markmadden;
+        imageResources[4] = R.drawable.jeffreed;
+        imageResources[5] = R.drawable.weeknd;
+
+        imageResourceID = imageResources[0];
+        imageResourceIndex = 0;
+    }
+
     public void changeChar(boolean isNext)
     {
-        //very temporary, lol
-        if (isRick)
+        if (isNext) //next in list
         {
-            imageResourceID = R.drawable.fredrogers1;
-
+            if (imageResourceIndex < imageResources.length - 1)
+            {
+                imageResourceIndex++;
+            }
+            else
+            {
+                imageResourceIndex = 0;
+            }
         }
-        else
+        else //previous
         {
-            imageResourceID = R.drawable.sebak230;
+            if (imageResourceIndex > 0)
+            {
+                imageResourceIndex--;
+            }
+            else
+            {
+                imageResourceIndex = imageResources.length - 1;
+            }
         }
 
+        imageResourceID = imageResources[imageResourceIndex];
         characterImage.setImageResource(imageResourceID);
-        isRick = !isRick;
     }
 
 }

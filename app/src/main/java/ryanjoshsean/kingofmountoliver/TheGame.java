@@ -25,6 +25,10 @@ public class TheGame {
         return currentRollStatus;
     }
 
+    public List<Player> getPlayers() {
+        return players;
+    }
+
     public TheGame(String [] playerNames, boolean [] aiArray)
     {
         players = new ArrayList<Player>();
@@ -43,6 +47,8 @@ public class TheGame {
     public Dice[] getDiceArray() {
         return diceArray;
     }
+
+
 
     public void advanceToNextPlayer()
     {
