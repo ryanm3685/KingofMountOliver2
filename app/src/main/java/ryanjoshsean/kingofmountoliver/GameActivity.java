@@ -1,11 +1,13 @@
 package ryanjoshsean.kingofmountoliver;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.google.android.gms.appindexing.Action;
@@ -14,9 +16,12 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 public class GameActivity extends ActionBarActivity {
     Button rollButton, finishRollButton;
+    ImageButton helpButton, statsButton;
     boolean [] shouldReroll;
     TheGame game;
     RollListener rollListener;
+    HelpListener helpListener;
+    StatsListener statsListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +36,19 @@ public class GameActivity extends ActionBarActivity {
         game = new TheGame(playerNames, aiArray);
 
         rollButton = (Button)findViewById(R.id.rollButton);
-        finishRollButton = (Button)findViewById(R.id.finishRollButton);
-        rollListener = new RollListener();
 
+        rollListener = new RollListener();
         rollButton.setOnClickListener(rollListener);
 
+        finishRollButton = (Button)findViewById(R.id.finishRollButton);
+
+        helpButton = (ImageButton)findViewById(R.id.gameHelpButton);
+        helpListener = new HelpListener();
+        helpButton.setOnClickListener(helpListener);
+
+        statsButton = (ImageButton)findViewById(R.id.statsButton);
+        statsListener = new StatsListener();
+        statsButton.setOnClickListener(statsListener);
     }
 
     int getDiceImageResource(Dice dice)
@@ -52,16 +65,7 @@ public class GameActivity extends ActionBarActivity {
     }
 
 
-    private class RollListener implements View.OnClickListener {
 
-        @Override
-        public void onClick(View view) {
-            //roll all dice that should be rolled
-            game.rollDice(shouldReroll);
-            //determine correct images for dice
-            setDiceImages();
-        }
-    }
 
     public void setDiceImages()
     {
@@ -83,5 +87,31 @@ public class GameActivity extends ActionBarActivity {
 
     }
 
+    private class RollListener implements View.OnClickListener {
 
+        @Override
+        public void onClick(View view) {
+            //roll all dice that should be rolled
+            game.rollDice(shouldReroll);
+            //determine correct images for dice
+            setDiceImages();
+        }
+    }
+
+    private class StatsListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+
+        }
+    }
+
+    private class HelpListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            Intent helpIntent = new Intent(getApplicationContext(), HelpActivity.class);
+            startActivity(helpIntent);
+        }
+    }
 }

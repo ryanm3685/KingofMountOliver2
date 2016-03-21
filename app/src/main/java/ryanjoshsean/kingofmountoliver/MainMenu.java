@@ -27,6 +27,14 @@ public class MainMenu extends ActionBarActivity {
                 startActivity(howMany);
             }
         });
+
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent helpIntent = new Intent(getApplicationContext(),HelpActivity.class);
+                startActivity(helpIntent);
+            }
+        });
     }
 
     @Override
