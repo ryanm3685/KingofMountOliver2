@@ -29,7 +29,7 @@ public class TheGame {
         return players;
     }
 
-    public TheGame(String [] playerNames, boolean [] aiArray)
+    public TheGame(String [] playerNames, boolean [] aiArray, int [] imagesArray)
     {
         players = new ArrayList<Player>();
         diceArray = new Dice[6];
@@ -37,7 +37,7 @@ public class TheGame {
 
         for (int i = 0; i < playerNames.length; i++)
         {
-            players.add(new Player(playerNames[i], aiArray[i]));
+            players.add(new Player(playerNames[i], aiArray[i], imagesArray[i]));
         }
 
         currentPlayer = players.get(0);
@@ -85,6 +85,13 @@ public class TheGame {
                 if (shouldRoll[i]) diceArray[i].roll();
             }
             if (currentRollStatus == EnumClass.rollStatus.rerollOne) currentRollStatus = EnumClass.rollStatus.rerollTwo;
+
+            if (currentRollStatus == EnumClass.rollStatus.rerollTwo)
+            {
+                currentRollStatus = EnumClass.rollStatus.firstRoll;
+                evaluateDice();
+                advanceToNextPlayer();
+            }
         }
     }
 
@@ -162,7 +169,6 @@ public class TheGame {
         if (null != south18thPlayer)
         {
             adjustMojo(south18thPlayer, points, false);
-            lastAttackerOfCenter = currentPlayer;
         }
     }
 

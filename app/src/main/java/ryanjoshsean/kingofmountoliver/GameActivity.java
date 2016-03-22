@@ -9,15 +9,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.util.Iterator;
+
 public class GameActivity extends ActionBarActivity {
     Button rollButton, finishRollButton;
     ImageButton helpButton, statsButton;
     boolean [] shouldReroll;
+    int[] imagesArray;
     TheGame game;
     RollListener rollListener;
     HelpListener helpListener;
@@ -32,9 +37,10 @@ public class GameActivity extends ActionBarActivity {
         for (int i = 0; i < shouldReroll.length; i++) shouldReroll[i] = true;
         String[] playerNames = getIntent().getStringArrayExtra("names");
         boolean[] aiArray = getIntent().getBooleanArrayExtra("AI");
+        imagesArray = getIntent().getIntArrayExtra("images");
+        setPlayerImages();
         //start the game logic here
-        game = new TheGame(playerNames, aiArray);
-
+        game = new TheGame(playerNames, aiArray, imagesArray);
         rollButton = (Button)findViewById(R.id.rollButton);
 
         rollListener = new RollListener();
@@ -46,9 +52,12 @@ public class GameActivity extends ActionBarActivity {
         helpListener = new HelpListener();
         helpButton.setOnClickListener(helpListener);
 
-        statsButton = (ImageButton)findViewById(R.id.statsButton);
-        statsListener = new StatsListener();
-        statsButton.setOnClickListener(statsListener);
+//        statsButton = (ImageButton)findViewById(R.id.statsButton);
+//        statsListener = new StatsListener();
+//        statsButton.setOnClickListener(statsListener);
+
+        printCurrentPlayerRoll();
+        printPlayerStatuses();
     }
 
     int getDiceImageResource(Dice dice)
@@ -64,8 +73,59 @@ public class GameActivity extends ActionBarActivity {
         return returnValue;
     }
 
+    void printPlayerStatuses()
+    {
+        TextView text1, text2, text3, text4, text5, text6;
+        text1 = (TextView)findViewById(R.id.player1Text);
+        text2 = (TextView)findViewById(R.id.player2Text);
+        text3 = (TextView)findViewById(R.id.player3Text);
+        text4 = (TextView)findViewById(R.id.player4Text);
+        text5 = (TextView)findViewById(R.id.player5Text);
+        text6 = (TextView)findViewById(R.id.player6Text);
+
+        text1.setText(getStatsStringForPlayer(game.getPlayers().get(0)));
+        text2.setText(getStatsStringForPlayer(game.getPlayers().get(1)));
+
+        if (game.getPlayers().size() >= 3) text3.setText(getStatsStringForPlayer(game.getPlayers().get(2)));
+        else text3.setVisibility(View.INVISIBLE);
+
+        if (game.getPlayers().size() >= 4) text4.setText(getStatsStringForPlayer(game.getPlayers().get(3)));
+        else text4.setVisibility(View.INVISIBLE);
+
+        if (game.getPlayers().size() >= 5) text5.setText(getStatsStringForPlayer(game.getPlayers().get(4)));
+        else text5.setVisibility(View.INVISIBLE);
+
+        if (game.getPlayers().size() >= 6) text6.setText(getStatsStringForPlayer(game.getPlayers().get(5)));
+        else text6.setVisibility(View.INVISIBLE);
+    }
 
 
+    public void setPlayerImages()
+    {
+        ImageView image1, image2, image3, image4, image5, image6;
+
+        image1 = (ImageView)findViewById(R.id.imageView);
+        image2 = (ImageView)findViewById(R.id.imageView2);
+        image3 = (ImageView)findViewById(R.id.imageView3);
+        image4 = (ImageView)findViewById(R.id.imageView4);
+        image5 = (ImageView)findViewById(R.id.imageView5);
+        image6 = (ImageView)findViewById(R.id.imageView6);
+
+        image1.setImageResource(imagesArray[0]);
+        image2.setImageResource(imagesArray[1]);
+
+        if (imagesArray.length >= 3) image3.setImageResource(imagesArray[2]);
+        else image3.setVisibility(View.INVISIBLE);
+
+        if (imagesArray.length >= 4) image4.setImageResource(imagesArray[3]);
+        else image4.setVisibility(View.INVISIBLE);
+
+        if (imagesArray.length >= 5) image5.setImageResource(imagesArray[4]);
+        else image5.setVisibility(View.INVISIBLE);
+
+        if (imagesArray.length >= 6) image6.setImageResource(imagesArray[5]);
+        else image6.setVisibility(View.INVISIBLE);
+    }
 
     public void setDiceImages()
     {
@@ -87,6 +147,48 @@ public class GameActivity extends ActionBarActivity {
 
     }
 
+    public String getStatsStringForPlayer(Player player)
+    {
+        return String.format("%s\nMojo:\t%s\nJuice:\t%s\nEnergy:\t%s\n", player.getName(), player.getMojo(), player.getJuice(), player.getEnergy());
+    }
+
+    public String getStatsForAllPlayers()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (Player p : game.getPlayers())
+        {
+            sb.append(getStatsStringForPlayer(p));
+        }
+
+        return sb.toString();
+    }
+
+    public void printCurrentPlayerRoll()
+    {
+        StringBuilder sb = new StringBuilder();
+        String playerName = game.currentPlayer.getName();
+        EnumClass.rollStatus rollStatus = game.getCurrentRollStatus();
+        String rollString = rollStatus.toString();
+        String brownsville, south18th;
+        if (null == game.brownsvillePlayer) brownsville = "No one";
+        else  brownsville = game.brownsvillePlayer.getName();
+        if (null == game.south18thPlayer) south18th = "No one";
+        else  south18th = game.south18thPlayer.getName();
+
+        sb.append(playerName)
+            .append(" ")
+            .append(rollString)
+            .append("\n")
+            .append(String.format("%s is on Brownsville Road\n", brownsville))
+            .append(String.format("%s is on South 18th Street\n", south18th));
+        String toastString = sb.toString();
+
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(getApplicationContext(), toastString, duration);
+        toast.show();
+    }
+
+
     private class RollListener implements View.OnClickListener {
 
         @Override
@@ -95,6 +197,8 @@ public class GameActivity extends ActionBarActivity {
             game.rollDice(shouldReroll);
             //determine correct images for dice
             setDiceImages();
+            printCurrentPlayerRoll();
+            printPlayerStatuses();
         }
     }
 
@@ -102,7 +206,10 @@ public class GameActivity extends ActionBarActivity {
 
         @Override
         public void onClick(View view) {
-
+            String stats = getStatsForAllPlayers();
+            Intent statsIntent = new Intent(getApplicationContext(), StatsActivity.class);
+            statsIntent.putExtra("stats", stats);
+            startActivity(statsIntent);
         }
     }
 

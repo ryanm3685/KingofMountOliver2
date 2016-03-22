@@ -41,7 +41,15 @@
 
         <activity
             android:name=".HelpActivity"
-            android:label="@string/title_activity_help"></activity>
+            android:label="@string/title_activity_help" />
+        <activity
+            android:name=".StatsActivity"
+            android:label="@string/title_activity_stats"
+            android:parentActivityName=".GameActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ryanjoshsean.kingofmountoliver.GameActivity" />
+        </activity>
     </application>
 
 </manifest>

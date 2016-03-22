@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SelectCharacters extends ActionBarActivity {
 
     int howManyPlayers;
@@ -19,7 +22,7 @@ public class SelectCharacters extends ActionBarActivity {
     int imageResourceID;
     Button nextButton, prevButton;
     EditText playerName;
-    int [] imageResources; //the id for each character image
+    ImageResourceMap[] imageResources; //map of the id of full size to mini size character image
     int imageResourceIndex; //index in array for the above id
 
     @Override
@@ -57,7 +60,7 @@ public class SelectCharacters extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 //until we support multiple people players
-                imagesArray[0] = imageResourceID;
+                imagesArray[0] = imageResources[imageResourceIndex].gameImage;
                 namesArray[0] = playerName.getText().toString();
                 aiArray[0] = false;
                 for (int i = 1; i < howManyPlayers; i++)
@@ -66,6 +69,7 @@ public class SelectCharacters extends ActionBarActivity {
 
                     namesArray[i] = String.format("Player %s", Integer.toString(i));
                     aiArray[i] = true;
+                    imagesArray[i] = imageResources[i].gameImage;
                 }
 
                 Intent intent = new Intent(getApplicationContext(), GameActivity.class);
@@ -82,16 +86,16 @@ public class SelectCharacters extends ActionBarActivity {
 
     void initializeImageResources()
     {
-        imageResources = new int[6];
+        imageResources = new ImageResourceMap[6];
 
-        imageResources[0] = R.drawable.sebak230;
-        imageResources[1] = R.drawable.fredrogers1;
-        imageResources[2] = R.drawable.steelymcbeam;
-        imageResources[3] = R.drawable.markmadden;
-        imageResources[4] = R.drawable.jeffreed;
-        imageResources[5] = R.drawable.weeknd;
+        imageResources[0] = new ImageResourceMap(R.drawable.sebak230, R.drawable.sebak75);
+        imageResources[1] = new ImageResourceMap(R.drawable.fredrogers1, R.drawable.fredrogers75);
+        imageResources[2] = new ImageResourceMap(R.drawable.steelymcbeam, R.drawable.steelymcbeam75);
+        imageResources[3] = new ImageResourceMap(R.drawable.markmadden, R.drawable.markmadden75);
+        imageResources[4] = new ImageResourceMap(R.drawable.jeffreed, R.drawable.jeffreed75);
+        imageResources[5] = new ImageResourceMap(R.drawable.weeknd, R.drawable.weeknd75);
 
-        imageResourceID = imageResources[0];
+        imageResourceID = imageResources[0].selectCharImage;
         imageResourceIndex = 0;
     }
 
@@ -120,8 +124,19 @@ public class SelectCharacters extends ActionBarActivity {
             }
         }
 
-        imageResourceID = imageResources[imageResourceIndex];
+        imageResourceID = imageResources[imageResourceIndex].selectCharImage;
         characterImage.setImageResource(imageResourceID);
+    }
+
+    private class ImageResourceMap
+    {
+        int selectCharImage, gameImage;
+
+        ImageResourceMap(int selectCharImage, int gameImage)
+        {
+            this.selectCharImage = selectCharImage;
+            this.gameImage = gameImage;
+        }
     }
 
 }

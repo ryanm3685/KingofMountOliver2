@@ -9,10 +9,11 @@ public class Player {
     int image, mojo = 10, juice, energy;
     boolean isAI;
 
-    public Player(String name, boolean isAI)
+    public Player(String name, boolean isAI, int image)
     {
         this.name = name;
         this.isAI = isAI;
+        this.image = image;
     }
 
     public String getName() {
