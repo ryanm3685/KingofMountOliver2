@@ -134,7 +134,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/player2Text"
-        android:layout_toEndOf="@+id/diceImage1"
+        android:layout_toStartOf="@+id/gameHelpButton"
         android:layout_alignTop="@+id/imageView2" />
 
     <TextView
@@ -143,7 +143,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/player3Text"
         android:layout_alignTop="@+id/imageView3"
-        android:layout_alignStart="@+id/rollButton"
+        android:layout_toStartOf="@+id/gameHelpButton"
         android:layout_alignEnd="@+id/player1Text" />
 
     <TextView
@@ -151,7 +151,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/player4Text"
-        android:layout_alignBottom="@+id/gameHelpButton"
         android:layout_toEndOf="@+id/gameHelpButton" />
 
     <TextView
@@ -159,14 +158,15 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/player5Text"
-        android:layout_below="@+id/player2Text"
-        android:layout_alignStart="@+id/imageView5" />
+        android:layout_alignTop="@+id/imageView5"
+        android:layout_toEndOf="@+id/gameHelpButton"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/player6Text"
-        android:layout_alignTop="@+id/imageView6" />
+        android:layout_alignTop="@+id/imageView6"
+        android:layout_toEndOf="@+id/gameHelpButton"/>
 
 </RelativeLayout>
