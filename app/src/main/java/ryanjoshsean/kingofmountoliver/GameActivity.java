@@ -225,16 +225,16 @@ public class GameActivity extends ActionBarActivity {
             printPlayerStatuses();
         }
 
-        void showAlert(String whichPlayer, String location)
+        void showAlert(String whichPlayer, final String location)
         {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activityContext);
-            alertDialogBuilder.setMessage(String.format("%s:  do you want to leave %s?", game.currentPlayer.getName()
+            alertDialogBuilder.setMessage(String.format("%s:  do you want to leave %s?", whichPlayer
                                                                                             ,location));
 
             alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface arg0, int arg1) {
-                    if (game.currentPlayer == game.brownsvillePlayer) game.leaveBrownsville();
+                    if (location.equals("Brownsville Road")) game.leaveBrownsville();
                     else game.leaveSouth18th();
                 }
             });
