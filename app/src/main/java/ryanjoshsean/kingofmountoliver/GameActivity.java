@@ -1,5 +1,7 @@
 package ryanjoshsean.kingofmountoliver;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -26,13 +28,15 @@ public class GameActivity extends ActionBarActivity {
     TheGame game;
     RollListener rollListener;
     HelpListener helpListener;
-    StatsListener statsListener;
+    Context activityContext;
+    //StatsListener statsListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        activityContext = this;
         shouldReroll = new boolean[6];
         for (int i = 0; i < shouldReroll.length; i++) shouldReroll[i] = true;
         String[] playerNames = getIntent().getStringArrayExtra("names");
@@ -194,24 +198,70 @@ public class GameActivity extends ActionBarActivity {
         @Override
         public void onClick(View view) {
             //roll all dice that should be rolled
-            game.rollDice(shouldReroll);
+            boolean turnOver = game.rollDice(shouldReroll);
+
+            if (turnOver)
+            {
+                if (null != game.getLastAttackerOfCenter())
+                {
+                    //create alert to get out of center, if you were attacked
+                    if (null != game.brownsvillePlayer)
+                    {
+                        showAlert(game.brownsvillePlayer.getName(), "Brownsville Road");
+                    }
+
+                    if (null != game.south18thPlayer)
+                    {
+                        showAlert(game.south18thPlayer.getName(), "South 18th Street");
+                    }
+                }
+
+                //finish turn
+                game.finishTurn();
+            }
             //determine correct images for dice
             setDiceImages();
             printCurrentPlayerRoll();
             printPlayerStatuses();
         }
-    }
 
-    private class StatsListener implements View.OnClickListener {
+        void showAlert(String whichPlayer, String location)
+        {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activityContext);
+            alertDialogBuilder.setMessage(String.format("%s:  do you want to leave %s?", game.currentPlayer.getName()
+                                                                                            ,location));
 
-        @Override
-        public void onClick(View view) {
-            String stats = getStatsForAllPlayers();
-            Intent statsIntent = new Intent(getApplicationContext(), StatsActivity.class);
-            statsIntent.putExtra("stats", stats);
-            startActivity(statsIntent);
+            alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    if (game.currentPlayer == game.brownsvillePlayer) game.leaveBrownsville();
+                    else game.leaveSouth18th();
+                }
+            });
+
+            alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
         }
+
     }
+
+//    private class StatsListener implements View.OnClickListener {
+//
+//        @Override
+//        public void onClick(View view) {
+//            String stats = getStatsForAllPlayers();
+//            Intent statsIntent = new Intent(getApplicationContext(), StatsActivity.class);
+//            statsIntent.putExtra("stats", stats);
+//            startActivity(statsIntent);
+//        }
+//    }
 
     private class HelpListener implements View.OnClickListener {
 

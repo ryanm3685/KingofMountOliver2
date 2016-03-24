@@ -68,7 +68,7 @@ public class TheGame {
 
     //boolean array can be null for first roll of turn, but needs
     //to exist for any rerolls to determine which dice will be rolled again
-    public void rollDice(boolean [] shouldRoll)
+    public boolean rollDice(boolean [] shouldRoll)
     {
         if (currentRollStatus == EnumClass.rollStatus.firstRoll) //roll all dice
         {
@@ -77,6 +77,7 @@ public class TheGame {
                 dice.roll();
             }
             currentRollStatus = EnumClass.rollStatus.rerollOne;
+            return false;
         }
         else if (currentRollStatus == EnumClass.rollStatus.rerollOne || currentRollStatus == EnumClass.rollStatus.rerollTwo)
         {
@@ -84,15 +85,26 @@ public class TheGame {
             {
                 if (shouldRoll[i]) diceArray[i].roll();
             }
-            if (currentRollStatus == EnumClass.rollStatus.rerollOne) currentRollStatus = EnumClass.rollStatus.rerollTwo;
 
-            if (currentRollStatus == EnumClass.rollStatus.rerollTwo)
+            if (currentRollStatus == EnumClass.rollStatus.rerollOne)
+            {
+                currentRollStatus = EnumClass.rollStatus.rerollTwo;
+                return false;
+            }
+            else if (currentRollStatus == EnumClass.rollStatus.rerollTwo)
             {
                 currentRollStatus = EnumClass.rollStatus.firstRoll;
                 evaluateDice();
-                advanceToNextPlayer();
+                return true;
             }
         }
+
+        return false;
+    }
+
+    void finishTurn()
+    {
+        advanceToNextPlayer();
     }
 
     public void evaluateDice()
@@ -147,6 +159,10 @@ public class TheGame {
         return lastAttackerOfCenter;
     }
 
+    void setLastAttackerOfCenter(Player player) {
+        lastAttackerOfCenter = player;
+    }
+
     public void attackOutside(Player attacker, int points)
     {
         for (Player player : players)
@@ -185,15 +201,24 @@ public class TheGame {
         if (player.getMojo() <= 0) //can't live without mojo!
         {
             //knock out player
-            players.remove(player);
+            removePlayer(player);
             //do something with graphics to visualize they're not playing anymore
-            if (players.size() == 1)
-            {
-                declareWinner(players.get(0));
-            }
+
         }
 
         if (player.getMojo() > MAX_MOJO) player.setMojo(MAX_MOJO);
+    }
+
+    void removePlayer(Player player)
+    {
+        if (brownsvillePlayer == player) setBrownsvillePlayer(lastAttackerOfCenter);
+        if (south18thPlayer == player) setSouth18thPlayer(lastAttackerOfCenter);
+        players.remove(player);
+
+        if (players.size() == 1)
+        {
+            declareWinner(players.get(0));
+        }
     }
 
     public void adjustJuice(Player player, int points)
@@ -224,11 +249,13 @@ public class TheGame {
     public void setBrownsvillePlayer(Player player)
     {
         brownsvillePlayer = player;
+        setLastAttackerOfCenter(null);
     }
 
     public void setSouth18thPlayer(Player player)
     {
         south18thPlayer = player;
+        setLastAttackerOfCenter(null);
     }
 
     public void leaveBrownsville()
